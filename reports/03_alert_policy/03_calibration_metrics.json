@@ -1,0 +1,26 @@
+{
+  "3": {
+    "esi": 3,
+    "brier_score": 0.17309,
+    "brier_naive": 0.1167,
+    "brier_skill": -0.4832,
+    "base_rate": 0.1349,
+    "n": 31460
+  },
+  "4": {
+    "esi": 4,
+    "brier_score": 0.06821,
+    "brier_naive": 0.02425,
+    "brier_skill": -1.8123,
+    "base_rate": 0.0249,
+    "n": 20182
+  },
+  "5": {
+    "esi": 5,
+    "brier_score": 0.03464,
+    "brier_naive": 0.0339,
+    "brier_skill": -0.0218,
+    "base_rate": 0.0351,
+    "n": 3102
+  }
+}

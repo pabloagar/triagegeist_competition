@@ -1,0 +1,46 @@
+{
+  "notebook": "01_eda_nhamcs",
+  "years": [
+    2016,
+    2017,
+    2018,
+    2019,
+    2022
+  ],
+  "n_total_esi35": 54744,
+  "by_esi": {
+    "3": {
+      "n": 31460,
+      "n_positive": 4244,
+      "base_rate": 0.1349,
+      "n_65plus": 6264,
+      "pct_65plus": 19.9,
+      "outcome_rate_65plus": 0.2837,
+      "outcome_rate_under65": 0.0979,
+      "n_alerted_top10pct": 3146,
+      "target_ppv_15x_enrichment": 0.2024
+    },
+    "4": {
+      "n": 20182,
+      "n_positive": 502,
+      "base_rate": 0.0249,
+      "n_65plus": 1793,
+      "pct_65plus": 8.9,
+      "outcome_rate_65plus": 0.0837,
+      "outcome_rate_under65": 0.0191,
+      "n_alerted_top10pct": 2018,
+      "target_ppv_15x_enrichment": 0.0373
+    },
+    "5": {
+      "n": 3102,
+      "n_positive": 109,
+      "base_rate": 0.0351,
+      "n_65plus": 304,
+      "pct_65plus": 9.8,
+      "outcome_rate_65plus": 0.1776,
+      "outcome_rate_under65": 0.0197,
+      "n_alerted_top10pct": 310,
+      "target_ppv_15x_enrichment": 0.0527
+    }
+  }
+}

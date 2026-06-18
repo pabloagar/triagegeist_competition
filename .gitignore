@@ -1,0 +1,25 @@
+# Raw NHAMCS survey data (CDC, not redistributable)
+NHAMCS/
+
+# Intermediate processed datasets (regenerate via NB01)
+data/raw/
+data/processed/
+
+# Unused per-patient SHAP value dumps (not read by any notebook)
+reports/02_model_validation/02_shap_values_esi*.csv
+
+# Notebook backups / superseded versions
+notebooks/*.bak
+notebooks/*_BACKUP.ipynb
+
+# Python / Jupyter clutter
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+
+# Tooling internals
+.claude/

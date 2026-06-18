@@ -1,0 +1,22 @@
+esi,rule_or_model,n_flagged,alert_burden_pct,ppv,base_rate,enrichment,recall,type
+3,Model Set A (Top 10%),3146,10.0,0.4196,0.1349,3.11,0.311,ML model
+3,age_65plus,6264,19.9,0.2837,0.1349,2.103,0.419,clinical rule
+3,hypoxemia_flag,1443,4.6,0.3153,0.1349,2.337,0.107,clinical rule
+3,age_65plus OR hypoxemia_flag,7060,22.4,0.2748,0.1349,2.037,0.457,clinical rule
+3,age_65plus AND hypoxemia_flag,647,2.1,0.4513,0.1349,3.346,0.069,clinical rule
+3,bp_not_missing,29379,93.4,0.1387,0.1349,1.028,0.96,clinical rule
+3,comorbidity_count >= 2,7374,23.4,0.2506,0.1349,1.858,0.435,clinical rule
+4,Model Set A (Top 5%),1010,5.0,0.1436,0.0249,5.772,0.289,ML model
+4,age_65plus,1793,8.9,0.0837,0.0249,3.363,0.299,clinical rule
+4,hypoxemia_flag,491,2.4,0.0896,0.0249,3.603,0.088,clinical rule
+4,age_65plus OR hypoxemia_flag,2160,10.7,0.0796,0.0249,3.201,0.343,clinical rule
+4,age_65plus AND hypoxemia_flag,124,0.6,0.1774,0.0249,7.133,0.044,clinical rule
+4,bp_not_missing,17230,85.4,0.027,0.0249,1.087,0.928,clinical rule
+4,comorbidity_count >= 2,2506,12.4,0.0666,0.0249,2.679,0.333,clinical rule
+5,Model Set A (Top 10%),311,10.0,0.1511,0.0351,4.301,0.431,ML model
+5,age_65plus,304,9.8,0.1776,0.0351,5.055,0.495,clinical rule
+5,hypoxemia_flag,141,4.5,0.1986,0.0351,5.651,0.257,clinical rule
+5,age_65plus OR hypoxemia_flag,400,12.9,0.1675,0.0351,4.767,0.615,clinical rule
+5,age_65plus AND hypoxemia_flag,45,1.5,0.3333,0.0351,9.486,0.138,clinical rule
+5,bp_not_missing,2530,81.6,0.0415,0.0351,1.181,0.963,clinical rule
+5,comorbidity_count >= 2,356,11.5,0.1376,0.0351,3.917,0.45,clinical rule

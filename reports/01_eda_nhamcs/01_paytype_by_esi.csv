@@ -1,0 +1,28 @@
+esi,paytyper,label,n,outcome_rate
+3,-9,Blank,352,16.19
+3,-8,code_-8,2317,10.49
+3,1,Private insurance,8315,10.55
+3,2,Medicare,6897,26.21
+3,3,Medicaid/CHIP,10392,9.54
+3,4,Worker comp,148,8.11
+3,5,Self-pay,2261,7.3
+3,6,No charge,135,5.93
+3,7,Other,643,12.91
+4,-9,Blank,275,3.27
+4,-8,code_-8,1576,2.22
+4,1,Private insurance,4977,2.33
+4,2,Medicare,2272,6.51
+4,3,Medicaid/CHIP,8571,1.91
+4,4,Worker comp,239,0.42
+4,5,Self-pay,1788,1.12
+4,6,No charge,66,0.0
+4,7,Other,418,2.15
+5,-9,Blank,121,17.36
+5,-8,code_-8,227,2.64
+5,1,Private insurance,610,1.15
+5,2,Medicare,337,13.06
+5,3,Medicaid/CHIP,1442,1.8
+5,4,Worker comp,26,0.0
+5,5,Self-pay,265,1.51
+5,6,No charge,7,0.0
+5,7,Other,67,1.49
