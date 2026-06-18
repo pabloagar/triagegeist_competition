@@ -17,7 +17,7 @@ prioritization alert to suggest earlier reassessment for those patients.
 This project uses the **National Hospital Ambulatory Medical Care Survey
 (NHAMCS)**, a public dataset from the U.S. CDC. The raw data is **not** included
 in this repository. Download it from the CDC:
-https://www.cdc.gov/nchs/ahcd/datasets_documentation_related.htm
+[https://www.cdc.gov/nchs/ahcd/datasets_documentation_related.htm](https://ftp.cdc.gov/pub/Health_Statistics/NCHS/dataset_documentation/NHAMCS/)
 
 A 2015 survey year is held out as an independent historical validation set.
 
