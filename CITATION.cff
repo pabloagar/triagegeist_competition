@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+title: "IntraSight-ESI: within-triage risk stratification on real NHAMCS ED data"
+message: "If you use this software, please cite it as below."
+type: software
+authors:
+  - family-names: "Aguirre Araya"
+    given-names: "Pablo"
+repository-code: "https://github.com/pabloagar/triagegeist_competition"
+license: MIT
+date-released: "2026-06"
+keywords:
+  - emergency triage
+  - clinical machine learning
+  - NHAMCS
+  - risk stratification
+  - reproducibility

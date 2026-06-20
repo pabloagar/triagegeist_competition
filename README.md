@@ -1,56 +1,69 @@
-# Triagegeist — Intra-ESI Prioritization Alert System
+# IntraSight-ESI
 
-An intra-ESI risk stratification system that flags higher-risk patients *within*
-the same Emergency Severity Index (ESI) triage category, using real NHAMCS
-emergency department data (2016–2022). Built for the Triagegeist Kaggle competition.
+**Finding the hidden high-risk patient within a single triage level — built and validated end-to-end on real NHAMCS emergency-department data.**
 
-## What it does
+> Research artifact for the *Triagegeist* competition. **Not validated for clinical use.** See the disclaimer below.
 
-Standard ESI triage assigns each patient a level (1–5). This project asks a
-narrower question: *within* a given ESI level (3, 4, 5), can we identify the
-patients who are most likely to experience a serious disposition outcome
-(hospitalization, transfer, or death in the ED)? The system produces a
-prioritization alert to suggest earlier reassessment for those patients.
+![IntraSight-ESI](assets/cover_560x280.png)
 
-## Data
+## What this is
 
-This project uses the **National Hospital Ambulatory Medical Care Survey
-(NHAMCS)**, a public dataset from the U.S. CDC. The raw data is **not** included
-in this repository. Download it from the CDC:
-[https://www.cdc.gov/nchs/ahcd/datasets_documentation_related.htm](https://ftp.cdc.gov/pub/Health_Statistics/NCHS/dataset_documentation/NHAMCS/)
+Most triage ML predicts the triage *level*. IntraSight-ESI asks a narrower, harder question: among patients **already assigned the same triage stratum**, which ones carry unusually high risk of a serious disposition outcome (hospitalization, transfer, or in-ED death)? It is a prioritization layer for **earlier reassessment** inside the existing pathway — a suggestion to look again sooner, made by a clinician, not a replacement for triage or clinical judgment.
 
-A 2015 survey year is held out as an independent historical validation set.
+**A note on nomenclature.** NHAMCS does not record the Emergency Severity Index itself. It records `IMMEDR`, a five-level "immediacy with which the patient should be seen" category harmonized from each site's own triage system. "ESI-like 3/4/5" is used as readable shorthand throughout; **all empirical results refer to `IMMEDR` strata, not confirmed ESI.**
 
-## Pipeline
+## Headline result
 
-Run the notebooks in this order (each depends on outputs of the previous ones):
+On real NHAMCS data the intra-stratum risk signal is robust (within-category permutation Z = 50.86 / 21.38 / 7.97 for ESI-like 3 / 4 / 5). The primary operating point is **ESI-like 4**: alerting the top 5% by score gives PPV 14.1%, recall 26.2%, and **5.24× enrichment** over the base rate in cross-validation, holding at **5.31× [3.36–7.30]** on a 2022 forward holdout with thresholds frozen in advance. Under those frozen cutoffs the realized 2022 alert burdens were 12.9% / 6.2% / 6.5% — the ranking transported, while the operating point of a fixed numeric threshold shifted slightly.
 
-0. `00_protocol_and_leakage_audit.ipynb` — pre-registered analysis protocol, hypotheses, and leakage audit (defined before looking at results)
-1. `01_eda_nhamcs.ipynb` — data loading, cleaning, exploratory analysis
-2. `02_model_validation.ipynb` — LightGBM model, cross-validation, SHAP
-3. `02b_logistic_baseline.ipynb` — L2 logistic regression baseline
-4. `03_alert_policy.ipynb` — alert policy and comparison vs. clinical rules
-5. `04_validation_subgroups_fairness.ipynb` — calibration, 2015 holdout, subgroup and fairness audit
-6. `05_kaggle_submission.ipynb` — final submission notebook (loads precomputed artifacts)
+## Why it's built this way
 
-## Methodology highlights
+- **Synthetic-data audit first.** The project began on the competition's synthetic set and the lesson came from watching it fail: a stratified permutation test showed no recoverable within-category signal, and a clinician-led audit found physiologically impossible records (BMI clamped to [10, 65], diastolic ≥ systolic, missingness only in low-acuity groups). The audit is reproduced in Section 2 of the notebook; the synthetic data itself is **not redistributed**.
+- **Leakage controls.** Three feature sets — Set A (strict triage-only), Set B (EHR-at-triage), and Set C (a deliberate leaky positive control) — confirm the pipeline detects leakage when present. `NUMMED`, `RACERETH`, `PAYTYPER`, and calendar year are excluded from the honest sets.
+- **Honest validation.** Leave-One-Year-Out as a *year-blocked robustness* analysis (not a prospective temporal claim) plus a true forward holdout: NHAMCS 2022 is scored once, never touching training, CV, calibration, or threshold selection.
+- **Calibration evaluated, ranking-based policy.** Isotonic calibration is assessed as a methodological check; the alert policy ranks raw scores and does not claim individually calibrated probabilities.
+- **Fairness audited, not assumed.** `RACERETH`/`PAYTYPER` are never predictors but alert rates and PPV are audited by group and reported transparently.
+- **Live recompute.** The notebook runs the entire pipeline from raw fixed-width files to figures with no precomputed artifact read back in, plus a provenance check.
 
-- **Pre-registered protocol:** hypotheses and analysis plan fixed up front (NB00) before results were examined
-- **Validation:** Leave-One-Year-Out (LOYO) cross-validation
-- **Feature sets:** triage-only (strict), EHR-at-triage, and a leaky positive control
-- **Leakage control:** NUMMED excluded; a deliberate leaky feature set used as positive control
-- **Calibration:** isotonic calibration, evaluated with Brier skill score
-- **Independent holdout:** 2015 survey year
-- **Baseline:** L2-regularized logistic regression
-- **Fairness:** alert-rate audit by race/ethnicity, sex, and payer
+## Repository structure
 
-## Reproducibility
+```
+notebooks/   the submission notebook (full pipeline, live recompute)
+audit/       synthetic-data audit notebooks (also reproduced in notebook Section 2)
+docs/        the project writeup
+assets/      cover image and figures
+data/        data acquisition instructions (no data committed)
+```
 
-Built and tested with **Python 3.11.9**. Install dependencies with
-`pip install -r requirements.txt`, download NHAMCS as described above, then run
-the notebooks in order. The submission notebook (NB05) reads precomputed
-artifacts from `reports/`.
+## Reproduce
+
+1. **Get the data.** Easiest path: attach the public Kaggle dataset `nhamcs-ed-2015-2022-raw` to the notebook on Kaggle. To run locally, follow `data/README.md` to place the raw NHAMCS ED Public Use Files.
+2. **Environment.** `pip install -r requirements.txt` (Python 3.11). On Kaggle these are preinstalled.
+3. **Run.** Execute `notebooks/intrasight_esi_v2.ipynb` top to bottom — CPU only, a few minutes. Seeds are fixed (`RANDOM_STATE = 42`) across CV splits, isotonic folds, and permutation tests, so headline numbers reproduce.
+
+## Data & provenance
+
+- **NHAMCS ED Public Use Files**, CDC/NCHS, survey years 2015–2019 and 2022 — **public domain (CC0)**. 2020–2021 are excluded (COVID-era ED utilization and triage practice changed enough to confound temporal modeling). Mirrored for reproducibility in the companion Kaggle dataset `nhamcs-ed-2015-2022-raw`.
+- The competition's **synthetic dataset** is read only from the competition input mount for the audit and is **never redistributed** here.
+- Reason-for-visit (RFV) code descriptions are decoded verbatim from the official NHAMCS public-domain documentation.
+
+## Links
+
+- Kaggle competition: *Triagegeist* — <https://www.kaggle.com/competitions/triagegeist/>
+- Kaggle notebook (executable): <https://www.kaggle.com/code/pabloaguirrearaya/intrasight-esi-v2>
+- Kaggle data companion: <https://www.kaggle.com/datasets/pabloaguirrearaya/nhamcs-ed-2015-2022-raw> (`nhamcs-ed-2015-2022-raw`)
+- Writeup: [`docs/writeup.md`](docs/writeup.md)
+
+## Citation
+
+See [`CITATION.cff`](CITATION.cff). Methodological reference:
+
+> Raita Y, Goto T, Faridi MK, et al. *Emergency department triage prediction of clinical outcomes using machine learning models.* Critical Care. 2019;23:64. doi:10.1186/s13054-019-2351-7
 
 ## License
 
-Code released under the MIT License (see LICENSE).
+Code is released under the MIT License (see [`LICENSE`](LICENSE)). NHAMCS data is CC0 (US government public domain) and is not relicensed here.
+
+## Disclaimer
+
+This is a retrospective research prototype on survey data. It is **not a medical device**, has not undergone prospective or external validation, and must not be used to make clinical decisions. Non-alerted patients still require standard reassessment for their assigned triage category.

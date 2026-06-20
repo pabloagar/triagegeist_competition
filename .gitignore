@@ -1,25 +1,57 @@
-# Raw NHAMCS survey data (CDC, not redistributable)
+# Raw NHAMCS survey data (CDC, not redistributable as a bundled copy in this repo)
 NHAMCS/
+nhamcs-ed-2015-2022-raw/
+nhamcs-ed-2015-2022-raw.zip
+armar_dataset_nhamcs.py
 
-# Intermediate processed datasets (regenerate via NB01)
-data/raw/
-data/processed/
+# Synthetic competition data (Competition Data per the rules -- never redistribute)
+# Note: "**/" is required (not just "audit/raw/") because a pattern with an internal slash
+# is anchored to this file's location in gitignore syntax, unlike "NHAMCS/" above which has
+# no internal slash and therefore already matches at any depth.
+synthetic/
+**/synthetic*/
+**/audit/raw/
 
-# Unused per-patient SHAP value dumps (not read by any notebook)
-reports/02_model_validation/02_shap_values_esi*.csv
-
-# Notebook backups / superseded versions
+# v1 (superseded) and the v2 development workspace -- only the built v2 notebook
+# (notebooks/intrasight_esi_v2.ipynb) and the audit notebooks are published from these;
+# the rest stays local.
+notebooks/0*.ipynb
 notebooks/*.bak
 notebooks/*_BACKUP.ipynb
+reports/
+intrasight-esi-v2/
+data/raw/
+data/processed/
+docs/*.pdf
+
+# Kaggle credentials / secrets
+kaggle.json
+.kaggle/
+*.env
+
+# Generated outputs (the notebook regenerates these)
+report/
+reports_v2/
+notebooks/report/
+
+# Project scratch / debug files -- not part of the deliverable
+_scratch_*
+_verify_*
+_tree_out.txt
 
 # Python / Jupyter clutter
 __pycache__/
-*.pyc
+*.py[cod]
 .ipynb_checkpoints/
+.venv/
+venv/
+env/
 
 # OS / editor noise
 .DS_Store
 Thumbs.db
+.idea/
+.vscode/
 
 # Tooling internals
 .claude/
