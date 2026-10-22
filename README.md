@@ -6,7 +6,7 @@
 
 A retrospective machine learning research project for the Triagegeist competition. It asks whether emergency department patients assigned the same triage stratum can be ranked by their risk of hospitalization, transfer or death in the emergency department.
 
-[View the public repository](https://github.com/pabloagar/triagegeist_competition) · [Open the Kaggle notebook](https://www.kaggle.com/code/pabloaguirrearaya/intrasight-esi-v2) · [Read the technical writeup](https://github.com/pabloagar/triagegeist_competition/blob/main/docs/writeup.md)
+[Open the Kaggle notebook](https://www.kaggle.com/code/pabloaguirrearaya/intrasight-esi-v2) · [Read the technical writeup](docs/writeup.md)
 
 **Status:** research prototype evaluated retrospectively on public US survey data. It has not undergone external or prospective clinical validation and must not be used to make care decisions.
 
@@ -27,20 +27,25 @@ Patients within a single triage category do not all have the same risk. Rather t
 
 ## Main retrospective result
 
-The primary group is **ESI-like 4**. The documented evaluation reports:
+The primary group is **ESI-like 4 (IMMEDR)**. Headline estimates are unweighted; they describe these records, not national population estimates. The documented evaluation reports:
 
 | Measure | Development cross-validation | 2022 forward holdout |
 | --- | --- | --- |
 | Alert burden | Top 5% by score | 6.2% under the frozen threshold |
 | Outcome enrichment over the stratum's baseline rate | 5.24× | 5.31×, with a 95% bootstrap interval of 3.36–7.30 |
-| Positive predictive value | 14.1% | See the notebook for the full holdout metrics |
-| Recall | 26.2% | See the notebook for the full holdout metrics |
+| Positive predictive value | 14.1% | [See full results](notebooks/intrasight_esi_v2.ipynb) |
+| Recall | 26.2% | [See full results](notebooks/intrasight_esi_v2.ipynb) |
 
 Enrichment compares the outcome rate among flagged records with the baseline rate in the same stratum. It is not an estimate of improved patient outcomes. The holdout's realized alert burden differs from the development target because the numeric threshold was kept fixed.
 
-![Original notebook figure comparing cross-validation and 2022 holdout enrichment across the three ESI-like strata](assets/retrospective-validation.png)
+<picture>
+  <source type="image/webp" srcset="assets/retrospective-validation.webp">
+  <img src="assets/retrospective-validation.png" alt="Original notebook figure comparing cross-validation and 2022 holdout enrichment across the three ESI-like strata" width="100%">
+</picture>
 
 *Original saved notebook figure. Its “ESI 3/4/5” labels are shorthand for NHAMCS IMMEDR strata, not confirmed ESI assignments. Error bars show 95% bootstrap intervals; ESI-like 5 remains exploratory.*
+
+[Full notebook](notebooks/intrasight_esi_v2.ipynb) · [Technical writeup](docs/writeup.md) · [Figure provenance](assets/FIGURE-PROVENANCE.md).
 
 ## My contribution
 
@@ -52,7 +57,11 @@ The contribution is the clinical framing and auditable evaluation, alongside the
 
 The public repository includes the analysis notebook, data acquisition instructions, audits, a technical writeup and a citation file. The workflow is written in Python, using pandas, NumPy, scikit-learn, LightGBM, SciPy and Matplotlib. Package versions and random seeds are specified in the project.
 
-To inspect or reproduce the analysis, start with the [original reproduction instructions](https://github.com/pabloagar/triagegeist_competition/blob/main/docs/README-before-bilingual-overview.md#reproduce) and [data guide](https://github.com/pabloagar/triagegeist_competition/blob/main/data/README.md). The competition's synthetic dataset is not redistributed.
+1. Obtain the public NHAMCS files following the [data guide](data/README.md). The competition's synthetic dataset is not redistributed.
+2. Set up Python 3.11 and run `pip install -r requirements.txt`.
+3. Run [intrasight_esi_v2.ipynb](notebooks/intrasight_esi_v2.ipynb) top to bottom with the data paths configured. The Kaggle version linked above is another entry point.
+
+Saved notebook outputs support the reported figures; this documentation review did not retrain the models. [Code license (MIT)](LICENSE) · [Citation](CITATION.cff).
 
 ## Limits and next steps
 

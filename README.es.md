@@ -6,7 +6,7 @@
 
 Proyecto de investigación retrospectiva con aprendizaje automático para la competencia Triagegeist. Estudia si es posible ordenar a pacientes de urgencias de una misma categoría de triaje según el riesgo de hospitalización, traslado o fallecimiento en el servicio de urgencias.
 
-[Ver el repositorio público](https://github.com/pabloagar/triagegeist_competition) · [Abrir el notebook en Kaggle](https://www.kaggle.com/code/pabloaguirrearaya/intrasight-esi-v2) · [Leer el informe técnico](https://github.com/pabloagar/triagegeist_competition/blob/main/docs/writeup.md)
+[Abrir el notebook en Kaggle](https://www.kaggle.com/code/pabloaguirrearaya/intrasight-esi-v2) · [Leer el informe técnico](docs/writeup.md)
 
 **Estado:** prototipo de investigación evaluado retrospectivamente con datos públicos de una encuesta estadounidense. No tiene validación clínica externa ni prospectiva y no debe utilizarse para tomar decisiones asistenciales.
 
@@ -27,20 +27,25 @@ Los pacientes de una misma categoría de triaje no tienen todos el mismo riesgo.
 
 ## Resultado retrospectivo principal
 
-El grupo principal es **ESI-like 4**. La evaluación documentada informa:
+El grupo principal es **ESI-like 4 (IMMEDR)**. Las estimaciones principales no están ponderadas por el diseño muestral; son resultados de estos registros, no estimaciones nacionales. La evaluación documentada informa:
 
 | Medida | Validación cruzada de desarrollo | Muestra reservada de 2022 |
 | --- | --- | --- |
 | Proporción de alertas | 5 % con mayor puntaje | 6,2 % con el umbral congelado |
 | Enriquecimiento del desenlace respecto de la frecuencia basal del estrato | 5,24× | 5,31×, con intervalo bootstrap del 95 % de 3,36–7,30 |
-| Valor predictivo positivo | 14,1 % | Métricas completas de la muestra reservada en el notebook |
-| Sensibilidad | 26,2 % | Métricas completas de la muestra reservada en el notebook |
+| Valor predictivo positivo | 14,1 % | [Ver resultados completos](notebooks/intrasight_esi_v2.ipynb) |
+| Sensibilidad | 26,2 % | [Ver resultados completos](notebooks/intrasight_esi_v2.ipynb) |
 
 El enriquecimiento compara la frecuencia del desenlace entre los registros señalados con la frecuencia basal del mismo estrato. No estima una mejora en los resultados de los pacientes. La proporción real de alertas de 2022 difiere del objetivo de desarrollo porque se mantuvo fijo el umbral numérico.
 
-![Figura original del notebook que compara el enriquecimiento de validación cruzada y de la muestra de 2022 en los tres estratos ESI-like](assets/retrospective-validation.png)
+<picture>
+  <source type="image/webp" srcset="assets/retrospective-validation.webp">
+  <img src="assets/retrospective-validation.png" alt="Figura original del notebook que compara el enriquecimiento de validación cruzada y de la muestra de 2022 en los tres estratos ESI-like" width="100%">
+</picture>
 
 *Figura original conservada en el notebook. Sus rótulos “ESI 3/4/5” son una abreviación de los estratos IMMEDR de NHAMCS, no asignaciones ESI confirmadas. Las barras muestran intervalos bootstrap del 95 %; ESI-like 5 mantiene carácter exploratorio.*
+
+[Notebook completo](notebooks/intrasight_esi_v2.ipynb) · [Informe técnico](docs/writeup.md) · [Procedencia de la figura](assets/FIGURE-PROVENANCE.md).
 
 ## Mi aporte
 
@@ -52,7 +57,11 @@ El aporte reúne el planteamiento clínico y una evaluación auditable, además 
 
 El repositorio público incluye el notebook de análisis, instrucciones de obtención de datos, auditorías, informe técnico y archivo de citación. El flujo utiliza Python, pandas, NumPy, scikit-learn, LightGBM, SciPy y Matplotlib. El proyecto especifica versiones y semillas aleatorias.
 
-Para inspeccionar o reproducir el análisis, comenzar por las [instrucciones originales de reproducción](https://github.com/pabloagar/triagegeist_competition/blob/main/docs/README-before-bilingual-overview.md#reproduce) y la [guía de datos](https://github.com/pabloagar/triagegeist_competition/blob/main/data/README.md). Los datos sintéticos de la competencia no se redistribuyen.
+1. Obtener los archivos públicos NHAMCS siguiendo la [guía de datos](data/README.md). Los datos sintéticos de la competencia no se redistribuyen.
+2. Preparar Python 3.11 e instalar `pip install -r requirements.txt`.
+3. Ejecutar [intrasight_esi_v2.ipynb](notebooks/intrasight_esi_v2.ipynb) completo, de arriba abajo, con las rutas de datos configuradas. También puede abrirse la versión de Kaggle enlazada arriba.
+
+El notebook contiene las salidas guardadas que respaldan las cifras; esta revisión documental no volvió a entrenar los modelos. [Licencia del código (MIT)](LICENSE) · [Citación](CITATION.cff).
 
 ## Límites y siguientes pasos
 
