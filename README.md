@@ -2,62 +2,48 @@
 
 **English** · [Leer en español](README.es.md)
 
-**Looking for hidden risk within the same triage category.**
+**Can patients in the same triage stratum have meaningfully different risks?**
 
-A retrospective machine learning research project for the Triagegeist competition. It asks whether emergency department patients assigned the same triage stratum can be ranked by their risk of hospitalization, transfer or death in the emergency department.
+Retrospective machine learning research on public NHAMCS emergency department data, developed for the Triagegeist competition. The target is hospitalization, transfer or death in the emergency department—not imminent physiological deterioration.
 
-[View the public repository](https://github.com/pabloagar/triagegeist_competition) · [Open the Kaggle notebook](https://www.kaggle.com/code/pabloaguirrearaya/intrasight-esi-v2) · [Read the technical writeup](https://github.com/pabloagar/triagegeist_competition/blob/main/docs/writeup.md)
+[Explore the notebook](https://www.kaggle.com/code/pabloaguirrearaya/intrasight-esi-v2) · [Methods](docs/writeup.md) · [Reproduce the analysis](docs/README-before-bilingual-overview.md#reproduce)
 
-**Status:** research prototype evaluated retrospectively on public US survey data. It has not undergone external or prospective clinical validation and must not be used to make care decisions.
+**Research prototype.** No external or prospective clinical validation; no demonstrated benefit to patient care.
 
-## The question
+## The result, in context
 
-Patients within a single triage category do not all have the same risk. Rather than predicting the category itself, IntraSight-ESI investigates whether information available at triage can identify a subgroup with a higher rate of serious disposition outcomes. Earlier reassessment is the proposed future use case; its benefit has not been tested.
+![Original notebook figure comparing cross-validation and 2022 holdout enrichment in three NHAMCS triage strata](assets/retrospective-validation.png)
 
-**What “ESI-like” means here:** NHAMCS records the five-level `IMMEDR` immediacy category, not confirmed Emergency Severity Index assignments. Results refer to those survey strata. The outcome describes disposition, not imminent physiological deterioration.
+*Unmodified notebook figure. “ESI 3/4/5” means NHAMCS IMMEDR survey strata, not confirmed ESI assignments. Error bars: 95% bootstrap intervals; stratum 5 is exploratory.*
 
-## Approach
+In **ESI-like 4**, the flagged subgroup had **5.31×** the stratum's baseline outcome rate in the 2022 holdout (95% bootstrap interval **3.36–7.30**). This is outcome enrichment, not an improvement in clinical outcomes.
 
-- Audit the competition's synthetic data before interpreting model performance.
-- Use public NHAMCS emergency department data from 2015–2019 for development and cross-validation; hold out 2022 for a later evaluation.
-- Compare LightGBM with regularized logistic regression.
-- Separate triage-available features from a deliberately leaky control that includes later information.
-- Assess performance within each stratum, with year-blocked cross-validation, subgroup checks and frozen thresholds for the 2022 holdout.
-- Evaluate calibration as a methodological check; base the alert policy on score ranking rather than claiming individually calibrated probabilities.
-
-## Main retrospective result
-
-The primary group is **ESI-like 4**. The documented evaluation reports:
-
-| Measure | Development cross-validation | 2022 forward holdout |
+| Measure | Development cross-validation | 2022 holdout |
 | --- | --- | --- |
-| Alert burden | Top 5% by score | 6.2% under the frozen threshold |
-| Outcome enrichment over the stratum's baseline rate | 5.24× | 5.31×, with a 95% bootstrap interval of 3.36–7.30 |
-| Positive predictive value | 14.1% | See the notebook for the full holdout metrics |
-| Recall | 26.2% | See the notebook for the full holdout metrics |
+| Alert burden | Top 5% by score | 6.2% with the frozen threshold |
+| Outcome enrichment | 5.24× | 5.31× |
+| Positive predictive value | 14.1% | Full metrics in notebook |
+| Recall | 26.2% | Full metrics in notebook |
 
-Enrichment compares the outcome rate among flagged records with the baseline rate in the same stratum. It is not an estimate of improved patient outcomes. The holdout's realized alert burden differs from the development target because the numeric threshold was kept fixed.
+The numeric threshold was frozen before the holdout; the realized alert burden therefore differs from the development target.
 
-![Original notebook figure comparing cross-validation and 2022 holdout enrichment across the three ESI-like strata](assets/retrospective-validation.png)
+## How it was evaluated
 
-*Original saved notebook figure. Its “ESI 3/4/5” labels are shorthand for NHAMCS IMMEDR strata, not confirmed ESI assignments. Error bars show 95% bootstrap intervals; ESI-like 5 remains exploratory.*
+- Development: NHAMCS 2015–2019, with year-blocked cross-validation; 2022 held out.
+- LightGBM compared with regularized logistic regression.
+- Synthetic-data audit, triage-available feature restrictions and a deliberately leaky control.
+- Subgroup checks, frozen thresholds and calibration checks. The alert policy ranks scores; it does not claim individually calibrated probabilities.
 
-## My contribution
-
-**Dr. Pablo Aguirre Araya, physician in Chile's MGZ public service program, Arica.** Framing the clinical question, defining outcomes and variable exclusions, auditing the synthetic data and interpreting the results, with AI-assisted development for implementation and methodological review.
-
-The contribution is the clinical framing and auditable evaluation, alongside the model implementation.
-
-## Reproducibility
-
-The public repository includes the analysis notebook, data acquisition instructions, audits, a technical writeup and a citation file. The workflow is written in Python, using pandas, NumPy, scikit-learn, LightGBM, SciPy and Matplotlib. Package versions and random seeds are specified in the project.
-
-To inspect or reproduce the analysis, start with the [original reproduction instructions](https://github.com/pabloagar/triagegeist_competition/blob/main/docs/README-before-bilingual-overview.md#reproduce) and [data guide](https://github.com/pabloagar/triagegeist_competition/blob/main/data/README.md). The competition's synthetic dataset is not redistributed.
+The [data guide](data/README.md), [technical writeup](docs/writeup.md), notebook and [reproduction instructions](docs/README-before-bilingual-overview.md#reproduce) document the workflow. Python, pandas, NumPy, scikit-learn, LightGBM, SciPy and Matplotlib are used. Competition synthetic data are not redistributed.
 
 ## Limits and next steps
 
-NHAMCS is a US survey rather than a local hospital's operational record. The composite outcome combines different dispositions, and the later holdout does not establish performance in Chile or in live care. Subgroup audits do not resolve fairness questions.
+NHAMCS is a US survey. Its IMMEDR categories are proxies for this research, and its composite disposition outcome combines distinct events. The later-year holdout does not establish performance in Chile, live care or an external hospital. Subgroup checks do not settle fairness questions.
 
-The next research steps are external validation, prospective evaluation and testing whether a reassessment workflow would improve care without creating excessive alert burden. This project has not reached those stages.
+External validation, prospective evaluation and assessment of a reassessment workflow remain future research. Do not use this prototype for care decisions.
 
-[Repository](https://github.com/pabloagar/triagegeist_competition) · [Notebook](https://www.kaggle.com/code/pabloaguirrearaya/intrasight-esi-v2) · [Contact](mailto:pablo.aguirre.araya@gmail.com)
+## My contribution
+
+Clinical question, outcome definition, variable exclusions, synthetic-data audit and interpretation, with AI-assisted implementation and methodological review. **Pablo Aguirre Araya, physician in Chile.**
+
+[Notebook](https://www.kaggle.com/code/pabloaguirrearaya/intrasight-esi-v2) · [Contact](mailto:pablo.aguirre.araya@gmail.com)

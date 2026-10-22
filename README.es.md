@@ -1,63 +1,49 @@
 # IntraSight-ESI
 
-[English](README.md) · **Español**
+[Read in English](README.md) · **Español**
 
-**Buscar riesgo oculto dentro de una misma categoría de triaje.**
+**¿Pueden tener riesgos distintos los pacientes de una misma categoría de triaje?**
 
-Proyecto de investigación retrospectiva con aprendizaje automático para la competencia Triagegeist. Estudia si es posible ordenar a pacientes de urgencias de una misma categoría de triaje según el riesgo de hospitalización, traslado o fallecimiento en el servicio de urgencias.
+Investigación retrospectiva con machine learning y datos públicos de urgencias del NHAMCS, desarrollada para Triagegeist. El desenlace es hospitalización, traslado o muerte en urgencias; no deterioro fisiológico inminente.
 
-[Ver el repositorio público](https://github.com/pabloagar/triagegeist_competition) · [Abrir el notebook en Kaggle](https://www.kaggle.com/code/pabloaguirrearaya/intrasight-esi-v2) · [Leer el informe técnico](https://github.com/pabloagar/triagegeist_competition/blob/main/docs/writeup.md)
+[Explorar el notebook](https://www.kaggle.com/code/pabloaguirrearaya/intrasight-esi-v2) · [Metodología](docs/writeup.md) · [Reproducir el análisis](docs/README-before-bilingual-overview.md#reproduce)
 
-**Estado:** prototipo de investigación evaluado retrospectivamente con datos públicos de una encuesta estadounidense. No tiene validación clínica externa ni prospectiva y no debe utilizarse para tomar decisiones asistenciales.
+**Prototipo de investigación.** Sin validación clínica externa ni prospectiva y sin beneficio asistencial demostrado.
 
-## La pregunta
+## El resultado, en contexto
 
-Los pacientes de una misma categoría de triaje no tienen todos el mismo riesgo. En lugar de predecir la categoría, IntraSight-ESI investiga si los datos disponibles durante el triaje permiten identificar un subgrupo con mayor frecuencia de desenlaces de disposición graves. Priorizar una reevaluación más temprana es una posible aplicación futura; su beneficio no se ha probado.
+![Figura original del notebook que compara enriquecimiento en validación cruzada y reserva de 2022 para tres estratos del NHAMCS](assets/retrospective-validation.png)
 
-**Qué significa “ESI-like”:** NHAMCS registra la categoría de inmediatez `IMMEDR`, de cinco niveles, no asignaciones confirmadas de Emergency Severity Index. Los resultados corresponden a esos estratos de la encuesta. El desenlace describe la disposición del paciente, no un deterioro fisiológico inminente.
+*Figura sin modificaciones. “ESI 3/4/5” representa estratos IMMEDR del NHAMCS, no asignaciones ESI confirmadas. Barras: intervalos bootstrap del 95%; el estrato 5 es exploratorio.*
 
-## Cómo se aborda
+En **ESI-like 4**, el subgrupo señalado tuvo una tasa del desenlace **5,31 veces** la basal del estrato en la reserva de 2022 (intervalo bootstrap del 95%: **3,36–7,30**). Es enriquecimiento del desenlace, no una mejora de resultados clínicos.
 
-- Auditar los datos sintéticos de la competencia antes de interpretar el rendimiento del modelo.
-- Usar datos públicos NHAMCS de urgencias de 2015–2019 para desarrollo y validación cruzada, reservando 2022 para una evaluación posterior.
-- Comparar LightGBM con regresión logística regularizada.
-- Separar las variables disponibles durante el triaje de un control deliberadamente contaminado con información posterior.
-- Evaluar dentro de cada estrato, con validación cruzada por años, análisis de subgrupos y umbrales congelados para la muestra de 2022.
-- Examinar la calibración como comprobación metodológica; la política de alerta se basa en ordenar puntajes, sin afirmar probabilidades individuales calibradas.
-
-## Resultado retrospectivo principal
-
-El grupo principal es **ESI-like 4**. La evaluación documentada informa:
-
-| Medida | Validación cruzada de desarrollo | Muestra reservada de 2022 |
+| Medida | Validación cruzada de desarrollo | Reserva de 2022 |
 | --- | --- | --- |
-| Proporción de alertas | 5 % con mayor puntaje | 6,2 % con el umbral congelado |
-| Enriquecimiento del desenlace respecto de la frecuencia basal del estrato | 5,24× | 5,31×, con intervalo bootstrap del 95 % de 3,36–7,30 |
-| Valor predictivo positivo | 14,1 % | Métricas completas de la muestra reservada en el notebook |
-| Sensibilidad | 26,2 % | Métricas completas de la muestra reservada en el notebook |
+| Proporción señalada | 5% con mayor puntuación | 6,2% con el umbral congelado |
+| Enriquecimiento del desenlace | 5,24× | 5,31× |
+| Valor predictivo positivo | 14,1% | Métricas completas en notebook |
+| Sensibilidad | 26,2% | Métricas completas en notebook |
 
-El enriquecimiento compara la frecuencia del desenlace entre los registros señalados con la frecuencia basal del mismo estrato. No estima una mejora en los resultados de los pacientes. La proporción real de alertas de 2022 difiere del objetivo de desarrollo porque se mantuvo fijo el umbral numérico.
+El umbral numérico se congeló antes de evaluar la reserva; por eso la proporción señalada difiere del objetivo de desarrollo.
 
-![Figura original del notebook que compara el enriquecimiento de validación cruzada y de la muestra de 2022 en los tres estratos ESI-like](assets/retrospective-validation.png)
+## Cómo se evaluó
 
-*Figura original conservada en el notebook. Sus rótulos “ESI 3/4/5” son una abreviación de los estratos IMMEDR de NHAMCS, no asignaciones ESI confirmadas. Las barras muestran intervalos bootstrap del 95 %; ESI-like 5 mantiene carácter exploratorio.*
+- Desarrollo: NHAMCS 2015–2019, con validación cruzada por año; reserva de 2022.
+- LightGBM frente a regresión logística regularizada.
+- Auditoría de datos sintéticos, restricción a variables disponibles en triaje y un control con fuga deliberada de información.
+- Revisión por subgrupos, umbrales congelados y comprobaciones de calibración. La política ordena puntuaciones; no afirma probabilidades individuales calibradas.
+
+La [guía de datos](data/README.md), [metodología](docs/writeup.md), el notebook y las [instrucciones de reproducción](docs/README-before-bilingual-overview.md#reproduce) documentan el proceso. Usa Python, pandas, NumPy, scikit-learn, LightGBM, SciPy y Matplotlib. Los datos sintéticos del concurso no se redistribuyen.
+
+## Límites y próximos pasos
+
+NHAMCS es una encuesta estadounidense. IMMEDR se usa como aproximación para esta investigación y el desenlace compuesto reúne eventos distintos. La reserva temporal no establece rendimiento en Chile, atención real ni un hospital externo. Los análisis por subgrupos no resuelven la equidad.
+
+Quedan pendientes la validación externa, la evaluación prospectiva y estudiar un flujo de reevaluación. El prototipo no debe orientar decisiones asistenciales.
 
 ## Mi aporte
 
-**Dr. Pablo Aguirre Araya, médico general de zona en Arica, Chile.** Formulación de la pregunta clínica, definición de desenlaces y exclusión de variables, auditoría de los datos sintéticos e interpretación de resultados, con apoyo de IA para la implementación y la revisión metodológica.
+Pregunta clínica, definición del desenlace, exclusión de variables, auditoría de datos sintéticos e interpretación, con implementación y revisión metodológica asistidas por IA. **Pablo Aguirre Araya, médico en Chile.**
 
-El aporte reúne el planteamiento clínico y una evaluación auditable, además de la implementación del modelo.
-
-## Reproducibilidad
-
-El repositorio público incluye el notebook de análisis, instrucciones de obtención de datos, auditorías, informe técnico y archivo de citación. El flujo utiliza Python, pandas, NumPy, scikit-learn, LightGBM, SciPy y Matplotlib. El proyecto especifica versiones y semillas aleatorias.
-
-Para inspeccionar o reproducir el análisis, comenzar por las [instrucciones originales de reproducción](https://github.com/pabloagar/triagegeist_competition/blob/main/docs/README-before-bilingual-overview.md#reproduce) y la [guía de datos](https://github.com/pabloagar/triagegeist_competition/blob/main/data/README.md). Los datos sintéticos de la competencia no se redistribuyen.
-
-## Límites y siguientes pasos
-
-NHAMCS es una encuesta estadounidense, no el registro operacional de un hospital local. El desenlace compuesto reúne disposiciones distintas, y la muestra posterior no establece rendimiento en Chile ni en atención real. Las auditorías de subgrupos no resuelven por sí solas la equidad del modelo.
-
-Los siguientes pasos de investigación serían la validación externa, una evaluación prospectiva y comprobar si un flujo de reevaluación mejora la atención sin generar una carga excesiva de alertas. El proyecto aún no ha llegado a esas etapas.
-
-[Repositorio](https://github.com/pabloagar/triagegeist_competition) · [Notebook](https://www.kaggle.com/code/pabloaguirrearaya/intrasight-esi-v2) · [Contacto](mailto:pablo.aguirre.araya@gmail.com)
+[Notebook](https://www.kaggle.com/code/pabloaguirrearaya/intrasight-esi-v2) · [Contacto](mailto:pablo.aguirre.araya@gmail.com)
